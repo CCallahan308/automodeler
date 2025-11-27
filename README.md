@@ -13,16 +13,16 @@ A web-based financial modeling tool that automatically generates linked 3-statem
 ## Screenshots
 
 ### Historical Performance - Revenue & Net Income Trends
-![Historical Performance](assets/Historical Performance.png)
+![Historical Performance](assets/Historical_Performance.png)
 
 ### Classic Model View - Full 3-Statement Table
-![Classic Model View](assets/Classi View.png)
+![Classic Model View](assets/Classi_View.png)
 
 ### Cash Flow Analysis
-![Cash Flow](assets/Cash Flow.png)
+![Cash Flow](assets/Cash_Flow.png)
 
 ### Margin Analysis
-![Margin Analysis](assets/Margin Analysis.png)
+![Margin Analysis](assets/Margin_Analysis.png)
 
 ## What's Included
 
