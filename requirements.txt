@@ -1,0 +1,6 @@
+dash==3.3.0
+dash-bootstrap-components==2.0.4
+plotly==5.24.1
+pandas==2.3.3
+yfinance==0.2.66
+xlsxwriter==3.2.9
