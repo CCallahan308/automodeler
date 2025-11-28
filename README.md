@@ -121,6 +121,7 @@ MIT License - feel free to use and modify for your needs.
 
 ## Author
 
+https://github.com/CCallahan308
 Built as a financial modeling tool for quick analysis and practice.
 
 ## Contributing
