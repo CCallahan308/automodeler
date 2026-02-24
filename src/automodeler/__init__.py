@@ -1,0 +1,1 @@
+"""Automodeler core package."""

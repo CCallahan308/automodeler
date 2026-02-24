@@ -1,114 +1,37 @@
-# AutoModeler - 3 Statement Financial Model Generator
+# Automodeler
 
-A web-based financial modeling tool that automatically generates linked 3-statement financial models from publicly available company data.
+A pragmatic 3-statement financial modeling tool. It pulls historical data from Financial Modeling Prep (FMP), projects future performance using basic operating drivers, and drops out a fully linked Excel model.
 
-## Features
+## What's in it
 
-- **Automated Data Fetching**: Pull historical financial statements directly from Yahoo Finance
-- **Fully Linked Excel Model**: Generate professional 3-statement models with integrated assumptions sheet
-- **Interactive Dashboard**: View financial performance, margins, and cash flow trends
-- **Classic Model View**: Display financials in traditional spreadsheet format
-- **Real-time Analysis**: KPI cards showing revenue, net income, cash position, and debt metrics
+*   Handles indirect cash flow reconciliation and retained earnings flow.
+*   Balance sheet balancing via automated cash or revolver plugs. If the plug gets too big, it throws an error instead of failing silently.
+*   Hits the live FMP `/stable/` endpoints with Pydantic validation.
+*   Generates an `.xlsx` file where projected periods are actual native Excel formulas (like `=B5*B6`) using `xlsxwriter`.
+*   Fast stateless web interface to tweak model drivers on the fly.
 
-## What's Included
+## Setup & Usage
 
-- **Income Statement**: Revenue, COGS, SG&A, EBITDA, EBIT, Tax, Net Income
-- **Balance Sheet**: Cash, AR, PP&E, Total Assets, AP, Debt, Equity
-- **Cash Flow**: Operating cash flow, Capex, Free cash flow
-- **Assumptions Sheet**: Drivers for revenue growth, margins, tax rate, D&A, and Capex
-- **Projections**: 5-year forward projections based on historical averages
+You need an FMP API key to pull the data.
 
-## Installation
-
+### On Mac / Linux
 ```bash
-git clone https://github.com/yourusername/automodeler.git
-cd automodeler
-pip install -r requirements.txt
+export FMP_API_KEY="your_api_key_here"
+pip install -e .
+automodeler
 ```
 
-## Requirements
-
-- Python 3.8+
-- dash
-- plotly
-- pandas
-- yfinance
-- xlsxwriter
-- dash-bootstrap-components
-
-## Usage
-
-```bash
-python 3_statement_model.py
+### On Windows (PowerShell)
+```powershell
+$env:FMP_API_KEY="your_api_key_here"
+pip install -e .
+automodeler
 ```
 
-Then navigate to `http://127.0.0.1:8050/` in your browser.
+Once it's running, open your browser to **http://localhost:8000**. Enter a ticker (e.g. AAPL), mess with the base revenue and margin assumptions, and it will output the metrics and a download link for the Excel file.
 
-### How to Use
+## Known Limitations
 
-1. Enter a stock ticker symbol (e.g., AAPL, MSFT, TSLA)
-2. Click "Generate" to build the model
-3. Review KPI metrics at the top
-4. Switch between tabs to view different analyses:
-   - **Historical Performance**: Revenue vs Net Income trends
-   - **Margin Analysis**: Gross, EBIT, and Net margin progression
-   - **Cash Flow**: Operating cash flow and Capex breakdown
-   - **Classic Model View**: Full 3-statement model in table format
-5. Download the Excel file with the complete linked model
-
-## Tabs
-
-### Historical Performance
-Combined bar and line chart showing revenue and net income over time with dual axes.
-
-### Margin Analysis
-Line chart tracking gross margin, EBIT margin, and net margin trends to analyze profitability evolution.
-
-### Cash Flow
-Stacked bar chart with OCF and Capex, plus FCF line showing available cash generation.
-
-### Classic Model View
-Formatted table view displaying the full Income Statement and Balance Sheet with all years side-by-side.
-
-## Excel Export Features
-
-The exported Excel file includes:
-
-- **Assumptions Sheet**: Historical driver calculations with 5-year forward projections
-- **Model Sheet**: Complete 3-statement model with formulas
-  - Income Statement calculations
-  - Balance sheet that balances
-  - Fully integrated assumptions
-
-All financial figures are in the company's native currency.
-
-## Data Sources
-
-Financial data is sourced from Yahoo Finance via the `yfinance` library. Historical data typically covers 5+ years depending on company and availability.
-
-## Limitations
-
-- Data quality depends on Yahoo Finance availability
-- Some companies may have incomplete or non-standard reporting
-- Historical drivers are used as basis for projections
-- Single-scenario model (no sensitivity analysis included)
-
-## Future Enhancements
-
-- Scenario analysis and sensitivity tables
-- DCF valuation module
-- Multi-company comparison
-- Custom assumption inputs before export
-- Database integration for faster reloads
-
-## License
-
-MIT License - feel free to use and modify for your needs.
-
-## Author
-
-Built as a financial modeling tool for quick analysis and practice.
-
-## Contributing
-
-Feel free to submit issues and enhancement requests!
+*   **Tax & Interest:** Right now it uses static assumptions. Next step is building out a real debt schedule.
+*   **Share Buybacks:** The model holds equity flat outside of retained earnings. Share repurchases are ignored.
+*   Working capital drivers (DSO, DIO, DPO) are standard but we should probably add deferred revenue for software tickers.

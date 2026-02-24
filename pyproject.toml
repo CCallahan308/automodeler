@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "automodeler"
+version = "0.1.0"
+description = "3-statement financial modeling and forecasting tool."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx",
+    "pydantic",
+    "xlsxwriter",
+    "fastapi",
+    "uvicorn",
+    "jinja2",
+    "python-multipart",
+    "python-dotenv"
+]
+
+[project.scripts]
+automodeler = "automodeler.app:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-httpx",
+    "ruff"
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "W",   # pycodestyle warnings
+    "UP"   # pyupgrade
+]
+ignore = ["E501"]

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automodeler | 3-Statement Engine</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Automodeler</h1>
+            <p>3-Statement Financial Modeling Engine</p>
+        </header>
+
+        <main>
+            <div class="card form-card">
+                <form method="POST" action="/" id="model-form">
+                    <div class="form-row">
+                        <div class="form-group flex-2">
+                            <label for="ticker">Ticker</label>
+                            <input type="text" id="ticker" name="ticker" placeholder="e.g. AAPL" value="{{ ticker | default('') }}" required autocomplete="off">
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="horizon">Horizon (Yrs)</label>
+                            <input type="number" id="horizon" name="horizon" min="1" max="10" value="{{ horizon | default('5') }}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group flex-1">
+                            <label for="rev_growth">Base Revenue Growth (%)</label>
+                            <input type="number" id="rev_growth" name="rev_growth" step="0.1" value="{{ rev_growth | default('5.0') }}" required>
+                        </div>
+                        <div class="form-group flex-1">
+                            <label for="ebitda_margin">Target EBITDA Margin (%)</label>
+                            <input type="number" id="ebitda_margin" name="ebitda_margin" step="0.1" value="{{ ebitda_margin | default('20.0') }}" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submit-btn">
+                        <span class="btn-text">Generate Excel Model</span>
+                        <span class="spinner" style="display: none;"></span>
+                    </button>
+                </form>
+            </div>
+
+            {% if error %}
+            <div class="alert alert-error">
+                <strong>Error:</strong> {{ error }}
+            </div>
+            {% endif %}
+
+            {% if summary %}
+            <div class="card results-card">
+                <div class="results-header">
+                    <h2>{{ summary.ticker }} Projected Summary</h2>
+                    <span class="badge">End Year: {{ summary.end_year }}</span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span class="metric-label">Terminal Revenue</span>
+                        <span class="metric-value">{{ summary.revenue }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Terminal EBITDA</span>
+                        <span class="metric-value">{{ summary.ebitda }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Ending Cash</span>
+                        <span class="metric-value">{{ summary.cash }}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Total Assets</span>
+                        <span class="metric-value">{{ summary.assets }}</span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a href="{{ download_url }}" class="btn btn-success">Download Linked Excel Model</a>
+                </div>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('model-form').addEventListener('submit', function() {
+            const btn = document.getElementById('submit-btn');
+            const text = btn.querySelector('.btn-text');
+            const spinner = btn.querySelector('.spinner');
+            
+            text.textContent = 'Querying FMP API & Calculating...';
+            spinner.style.display = 'inline-block';
+            btn.classList.add('btn-loading');
+            
+            // Allow form to submit normally, disable after a tiny delay
+            // so the submission goes through.
+            setTimeout(() => {
+                btn.disabled = true;
+            }, 10);
+        });
+    </script>
+</body>
+</html>
