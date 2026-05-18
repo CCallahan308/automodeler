@@ -165,8 +165,6 @@ def build_excel_model(filepath: str, periods: list[dict[str, Any]], drivers: Any
             ws.write_number(R_REV_GROWTH, col_idx, drivers.revenue_growth, fmt_blue_pct)
             ws.write_number(R_EBITDA_MARGIN, col_idx, drivers.ebitda_margin, fmt_blue_pct)
             ws.write_number(R_DA_PCT, col_idx, drivers.da_pct_gross_ppe, fmt_blue_pct)
-            ws.write_number(R_DSO, col_idx, drivers.dso, fmt_blue_pct)
-            # Overwrite DPO/DIO styles directly for inputs
             fmt_blue_num = wb.add_format({"font_color": "#0000FF", "num_format": "#,##0"})
             ws.write_number(R_DSO, col_idx, drivers.dso, fmt_blue_num)
             ws.write_number(R_DIO, col_idx, drivers.dio, fmt_blue_num)
