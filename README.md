@@ -68,6 +68,31 @@ automodeler
 
 Then open <http://localhost:8000>, enter a ticker (`AAPL`, `MSFT`, `NVDA`), and adjust the base revenue and margin assumptions. The page returns key metrics and a download link for the Excel file.
 
+## Development setup
+
+```bash
+pip install -e ".[dev]"
+```
+
+`python-dotenv` is included in the dev extras so local `.env` files are automatically loaded when running the app. In production, set `FMP_API_KEY` directly as an environment variable.
+
+## Running tests
+
+```bash
+pytest tests/ -v
+```
+
+## Balance sheet tolerance
+
+The projection engine validates that the balance sheet balances each period. The allowed plug magnitude defaults to **10%** of total assets (`threshold_pct=0.10`). You can relax this threshold when constructing a `FinancialModel`:
+
+```python
+engine = FinancialModel(history, drivers)
+projected = engine.project(horizon=5, threshold_pct=0.15)
+```
+
+If the balance sheet plug exceeds the threshold, a `ValueError` is raised — this is intentional. It means the model's assumptions are internally inconsistent and the output should not be trusted.
+
 ## Repo structure
 
 ```

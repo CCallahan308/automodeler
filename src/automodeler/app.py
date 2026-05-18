@@ -1,3 +1,4 @@
+import logging
 import os
 import tempfile
 from pathlib import Path
@@ -8,6 +9,8 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+
+logger = logging.getLogger(__name__)
 
 from .export import build_excel_model
 from .fetch import get_financials
@@ -90,8 +93,11 @@ async def process_form(
         }
         dl_link = f"/download/{fname}"
 
-    except Exception as e:
+    except (ValueError, RuntimeError, KeyError) as e:
         error_msg = str(e)
+    except Exception as e:
+        logger.exception("Unexpected error generating model for %s", symbol)
+        error_msg = f"Unexpected error: {type(e).__name__}. Please check the ticker symbol and try again."
 
     return templates.TemplateResponse("index.html", {
         "request": request,
@@ -107,7 +113,9 @@ async def process_form(
 
 @app.get("/download/{filename}")
 async def fetch_excel(filename: str):
-    target = TEMP_DIR / filename
+    target = (TEMP_DIR / filename).resolve()
+    if not str(target).startswith(str(TEMP_DIR.resolve())):
+        return HTMLResponse("Forbidden", status_code=403)
     if not target.exists():
         return HTMLResponse("File not found", status_code=404)
 
