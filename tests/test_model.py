@@ -92,3 +92,22 @@ def test_cash_deficit_plug():
     assert p2["cash"] == 0.0
     assert p2["revolver"] > 0.0
     assert pytest.approx(p2["total_assets"], 0.1) == p2["total_le"]
+
+
+def test_balance_sheet_plug_raises_on_extreme_imbalance():
+    """Model should raise ValueError when balance sheet is too far off.
+
+    The guard fires when abs(plug_delta) > threshold_pct (default 10%) of
+    total_assets. We trigger this by giving the starting period an equity
+    value that is massively overstated relative to the asset base, so the
+    forward-projected total_le is far larger than total_assets regardless
+    of the cash/revolver plug.
+    """
+    history = get_base_history()
+    # Massively overstate equity — total_le will dwarf total_assets every period.
+    history[0]["equity"] = 50_000.0
+    history[0]["retained_earnings"] = 0.0
+
+    model = FinancialModel(history, get_base_drivers())
+    with pytest.raises(ValueError, match="Balance sheet plug magnitude"):
+        model.project(horizon=1)
