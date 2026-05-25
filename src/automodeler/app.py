@@ -10,11 +10,11 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-logger = logging.getLogger(__name__)
-
 from .export import build_excel_model
 from .fetch import get_financials
 from .model import Drivers, FinancialModel, ingest_fmp_data
+
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file if it exists
 load_dotenv()
